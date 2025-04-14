@@ -5,7 +5,6 @@
 #include "queue.h"
 #include "trap.h"
 
-
 static struct queue task_queue;
 
 // defined in proc.c
@@ -76,13 +75,6 @@ void scheduler() {
                 intr_off();
                 continue;
             }
-        }
-        if (p->mm != NULL) {
-            w_satp(MAKE_SATP(KVA_TO_PA(p->mm->pgt)));
-            sfence_vma(); // 刷新 TLB
-        } else {
-            w_satp(MAKE_SATP(kernel_pagetable));
-            sfence_vma();
         }
 
         acquire(&p->lock);

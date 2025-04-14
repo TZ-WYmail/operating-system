@@ -49,6 +49,7 @@ static int handle_intr(void) {
 
 void kernel_trap(struct ktrapframe *ktf) {
     assert(!intr_get());
+
     if ((r_sstatus() & SSTATUS_SPP) == 0)
         panic("kerneltrap: not from supervisor mode");
 
@@ -73,24 +74,10 @@ void kernel_trap(struct ktrapframe *ktf) {
             goto kernel_panic;
         }
     } else {
-        
-        if (exception_code == 12 || exception_code == 13 || exception_code == 15) {
-            struct proc *p = curr_proc();
-            if (holding(&p->mm->lock)) {
-                intr_off();
-                release(&p->mm->lock);
-            }
-            p->killed = 1;
-            mycpu()->inkernel_trap--;
-            exit(-9);
-
-            return;            
-            
-        }
-
         // kernel exception, unexpected.
         goto kernel_panic;
     }
+
     assert(!intr_get());
     assert(mycpu()->inkernel_trap == 1);
 
@@ -211,7 +198,6 @@ void usertrap() {
 
     // prepare for return to user mode
     assert(!intr_get());
-
     usertrapret();
 }
 

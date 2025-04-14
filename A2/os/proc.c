@@ -305,7 +305,6 @@ int wait(int pid, int *code) {
                     freeproc(child);
                     release(&child->lock);
                     release(&wait_lock);
-
                     return cpid;
                 }
             }

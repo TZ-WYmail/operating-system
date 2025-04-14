@@ -105,7 +105,7 @@ void pop_off(void)
 	c->noff -= 1;
 	if (c->noff == 0 && c->interrupt_on) {
 		if (c->inkernel_trap)
-			// panic("pop_off->intr_on happens in kernel trap");
+			panic("pop_off->intr_on happens in kernel trap");
 		intr_on();
 	}
 }

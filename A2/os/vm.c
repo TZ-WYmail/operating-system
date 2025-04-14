@@ -99,8 +99,6 @@ struct mm *mm_create() {
     memset(mm->pgt, 0, PGSIZE);
 
     acquire(&mm->lock);
-    // mm_copy_kpgt(mm);
-
     return mm;
 
 free_mm:
@@ -123,9 +121,6 @@ void mm_copy_kpgt(struct mm *mm) {
         pte_t *kpte = (pte_t *)&kernel_pagetable[i];
         pte_t *upte = (pte_t *)&mm->pgt[i];
         // Assignment 2: Your code here
-        if (*kpte & PTE_V) {
-            *upte = *kpte & ~PTE_U;
-        }
     }
 }
 
